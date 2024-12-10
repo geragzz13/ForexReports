@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ReportCreationScreen extends StatefulWidget {
-  const ReportCreationScreen({super.key});
+  final String
+      reportType; // Dynamic report type: Pesos, Dollars, Weekly, Monthly
+
+  const ReportCreationScreen({required this.reportType, super.key});
 
   @override
   State<ReportCreationScreen> createState() => _ReportCreationScreenState();
@@ -14,18 +17,16 @@ class _ReportCreationScreenState extends State<ReportCreationScreen> {
   final TextEditingController _dolaresController = TextEditingController();
 
   List<Map<String, String>> _reportes = []; // List to store reports
-
   String? _selectedClient;
   final List<String> _clientes = ['Cliente 1', 'Cliente 2', 'Cliente 3'];
 
-  // This function updates Pesos or Dólares dynamically based on the Tipo de Cambio
+  // Update calculation logic
   void _updateCalculation() {
     if (_efectivoController.text.isEmpty || _tcController.text.isEmpty) return;
 
     final efectivo = double.tryParse(_efectivoController.text) ?? 0;
     final tc = double.tryParse(_tcController.text) ?? 1;
 
-    // Dynamically calculate Pesos or Dólares based on user input
     if (_pesosController.text.isEmpty && _dolaresController.text.isNotEmpty) {
       final dolares = double.tryParse(_dolaresController.text) ?? 0;
       _pesosController.text = (dolares * tc).toStringAsFixed(2);
@@ -36,6 +37,7 @@ class _ReportCreationScreenState extends State<ReportCreationScreen> {
     }
   }
 
+  // Add a new report
   void _addReporte() {
     if (_selectedClient != null &&
         _efectivoController.text.isNotEmpty &&
@@ -55,6 +57,7 @@ class _ReportCreationScreenState extends State<ReportCreationScreen> {
     }
   }
 
+  // Clear form inputs
   void _clearForm() {
     _efectivoController.clear();
     _pesosController.clear();
@@ -66,7 +69,7 @@ class _ReportCreationScreenState extends State<ReportCreationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Crear Reporte'),
+        title: Text('Crear Reporte - ${widget.reportType}'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
